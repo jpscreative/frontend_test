@@ -3,6 +3,11 @@
 <head>
 	<title>Frontend Coding Test | Text Search</title>
 	<link type="text/css" rel="stylesheet" href="../css/style.css" />
+    <style type="text/css">
+        #results {
+            min-height: 3rem;
+        }
+    </style>
 </head>
 <body>
 <div id="headwrap">
@@ -13,12 +18,12 @@
 <div id="content">
 	<h1><span class="red">Text</span> Search</h1>
 	<p>
-		There are two main components below, a search form and a text article about turtles. The form should be setup such that a word or phase can be entered in the search form, and the number of occurences of that phrase is shown below. 
+		There are two main components below, a search form and a text article about turtles. The form should be setup such that a word or phrase can be entered in the search form, and the number of occurences of that phrase is shown below. 
 	</p>
 	<p>
 		For example, in the below text there are two occurences of the word "Testudines" so if you put that word in the search form, and submit, the results should say:
 
-		<i>Found 2 occurances of the word "Testudines" in the below text.</i>
+		<i>Found 2 occurences of the word "Testudines" in the below text.</i>
 	</p>
 	<p>
 		Keep in mind that words can be contained within multiple levels of HTML elements, and phrases may cross those HTML element boundaries.
@@ -27,13 +32,14 @@
 	<hr/>
 
 	<h2>Search</h2>
-	<form>
-		<input type="text" id="search_input" value="llama" />
+	<form onsubmit="return getResults()">
+		<input type="text" id="search_input" value="" />
 		<input type="submit" value="Search" />
 	</form>
 
 	<h3>Results</h3>
-	Found 0 occurances of the word "llama" in the below text.
+	<div id="results"></div>
+    <!--Found 0 occurences of the word "llama" in the below text.-->
 
 	<hr/>
 
@@ -54,5 +60,36 @@
 	</div>
 </div>
 
+<script type="text/javascript">
+    /*
+    NOTES TO SELF:
+    -Write a RegExp that searches all elements, even across tag attributes.
+        --Not case-sensitive
+        --Can be 1 word -> a whole sentence
+        --Ignore - _ in search?
+    -Order of operation
+        --Form submits to itself
+        --Take value from input#search_input and compare it in a str.match() against the contents of div#search_text
+        --If match (ignoring underscores, dashes, and forward slashes), output to div#results.
+    */
+    var search_text = document.getElementById('search_text');
+    var cleaned_text = search_text.innerHTML.replace(/[\?\+~#\_\/\.,:-]+/gi, ' '); // string
+    var results = document.getElementById('results');
+    
+    function getResults() {
+        var si = document.getElementById('search_input').value.trim();
+        var regexp = new RegExp(RegExp.escape(si), 'gi');
+        var matches = cleaned_text.match(regexp);
+        var num = (matches !== null) ? matches.length : 0;
+        
+        results.innerHTML = 'Found '+num+' occurences of the word "'+si+'" in the below text.';
+        return false;
+    };
+    // Added function to RegExp to escape special characters in the string before parsing
+    RegExp.escape= function(s) {
+        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    };
+</script>
+    
 </body>
 </html>

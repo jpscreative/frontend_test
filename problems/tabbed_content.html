@@ -17,6 +17,64 @@
 			border: 1px solid #CCCCCC;
 			vertical-align:middle; margin-bottom: 3px;
 		}
+        
+        #container {
+            width: 647px;
+            border: 1px solid #CCC;
+            background-color: #F9F9F9;
+            padding: 3px;
+        }
+        #container #inner {
+            position: relative;
+            color: #000;
+            padding: 5px;
+        }
+        #container #inner h3 {
+            position: absolute;
+            top: 0px;
+            left: 5px;
+            width: 80px;
+            height: 16px;
+            padding: 10px;
+            text-align: center;
+            background-color: #EEE;
+            border: 1px solid #000;
+            font-size: 11pt;
+            z-index: 20;
+            cursor: pointer;
+            
+            -webkit-border-top-left-radius: 5px;
+            -webkit-border-top-right-radius: 5px;
+            -moz-border-radius-topleft: 5px;
+            -moz-border-radius-topright: 5px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;            
+        }
+        #container #inner h3:hover {
+            background-color: #DDD;
+        }
+        #container #inner h3.selected {
+            background-color: #FFF;
+            border-bottom: 0;
+            height: 17px;
+        }
+
+        #container #inner h3:nth-of-type(2) {
+            left: 110px;
+        }
+        #container #inner h3:nth-of-type(3) {
+            left: 215px;
+        }
+        #container #inner p {
+            margin-top: 46px;
+            border: 1px solid #000;
+            background-color: #FFF;
+            padding: 10px;
+            display: none;
+        }
+        #container #inner p:nth-of-type(1) {
+            display: block;
+        }
 	</style>
 </head>
 <body>	
@@ -41,22 +99,62 @@
 
 		<div id="container">
 			Turn this content into a tabbed container.
+            <!--
+            NOTE: I left the content and tag structure largely as-is since the instructions 
+            didn't indicate I could rearrange those elements.
+            -->
 
-			<h3>Tab 1</h3>
-			<p>
-				Gingerbread muffin gummies gingerbread macaroon. Lollipop candy applicake toffee faworki. Bear claw topping jelly toffee toffee powder tiramisu candy chupa chups. Chupa chups dragee icing applicake chupa chups dessert. Croissant jelly faworki marzipan tootsie roll marshmallow. Marshmallow toffee sweet roll fruitcake.
-			</p>
-
-			<h3>Tab 2</h3>
-			<p>
-				Chocolate faworki croissant brownie halvah macaroon gummi bears wypas. Chupa chups icing gummies pudding dessert carrot cake. Cupcake jelly beans sweet roll icing ice cream apple pie tootsie roll gummi bears marzipan. Brownie gummies chupa chups pie. Cupcake jujubes topping. 
-			</p>
-
-			<h3>Tab 3</h3>
-			<p>
-				Cheesecake jelly beans ice cream lollipop sweet pastry. Chupa chups dessert cheesecake sesame snaps. Cookie ice cream candy canes pastry cake muffin. Icing chocolate sweet gummi bears powder oat cake oat cake lemon drops.
-			</p>
-		</div>
+			<div id="inner">
+                <h3 id="tab-1" class="selected">Tab 1</h3>
+                <p id="copy-1">
+                    Gingerbread muffin gummies gingerbread macaroon. Lollipop candy applicake toffee faworki. Bear claw topping jelly toffee toffee powder tiramisu candy chupa chups. Chupa chups dragee icing applicake chupa chups dessert. Croissant jelly faworki marzipan tootsie roll marshmallow. Marshmallow toffee sweet roll fruitcake.
+                </p>
+    
+                <h3 id="tab-2">Tab 2</h3>
+                <p id="copy-2">
+                    Chocolate faworki croissant brownie halvah macaroon gummi bears wypas. Chupa chups icing gummies pudding dessert carrot cake. Cupcake jelly beans sweet roll icing ice cream apple pie tootsie roll gummi bears marzipan. Brownie gummies chupa chups pie. Cupcake jujubes topping. 
+                </p>
+    
+                <h3 id="tab-3">Tab 3</h3>
+                <p id="copy-3">
+                    Cheesecake jelly beans ice cream lollipop sweet pastry. Chupa chups dessert cheesecake sesame snaps. Cookie ice cream candy canes pastry cake muffin. Icing chocolate sweet gummi bears powder oat cake oat cake lemon drops.
+                </p>
+            </div>
+        
+        </div>
+        
 	</div>
+    
+    <script type="text/javascript">
+        var container = document.getElementById('container');
+        var tabs = container.getElementsByTagName('h3');
+        var content = container.getElementsByTagName('p');
+        var current = 0;
+        
+        function switchTabs() {
+            var chosen = parseInt(this.getAttribute('id').substr(4)) - 1;
+            if(chosen !== current) {
+                // Add class 'selected' to this tab
+                this.className = 'selected';
+                // Remove class 'selected' from prior tab
+                tabs[current].className = tabs[current].className.replace(/(?:^|\s)selected(?!\S)/g, '');
+                // Change the display order of the copy
+                content[current].style.display = 'none';
+                content[chosen].style.display = 'block';
+                // Update which tab is the current tab
+                current = chosen;
+            }
+        };
+        
+        // Assign button functionality to all h3's in var tabs
+        for(var i = 0; i < tabs.length; i++) {
+            if(tabs[i].addEventListener) {
+                tabs[i].addEventListener('click', switchTabs, false);
+            } else if(tabs[i].attachEvent) {
+                tabs[i].attachEvent('click', switchTabs);
+            }
+        }
+    </script>
+    
 </body>
 </html>

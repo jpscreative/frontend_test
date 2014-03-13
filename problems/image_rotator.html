@@ -6,11 +6,46 @@
 	<style type="text/css">
 		#rotator {
 			width: 450px;
-			height: 300px;
+			height: 266px;
 			border: 1px solid black;
 			background: #aaa;
 			text-align: center;
+            
+            position: relative;
+            overflow-x: hidden;
 		}
+        #rotator .rotated {
+            position: absolute;
+            top: 0px;
+            left: 450px;
+            
+        }
+        #rotator #kat_1 {
+            left: 0px;
+        }
+        #rotator .rotated .copy {
+            position: absolute;
+            width: 450px;
+            height: 80px;
+            top: 186px;
+            background: -moz-linear-gradient(top,  rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.65)), color-stop(100%,rgba(0,0,0,0.2))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.2) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.2) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.2) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.2) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+            
+            color: #FFF;
+        }
+        #rotator .rotated .copy h4 {
+            margin: 0.5rem 0;
+            padding: 0;
+        }
+        #rotator .rotated .copy p {
+            margin: 0 1em;
+            padding: 0;
+        }
 	</style>
 </head>
 <body>
@@ -32,28 +67,109 @@
 
 	<hr />
 
-	<h4>Katarina</h4>
-	<p>Fruitcake bonbon donut jelly-o brownie biscuit marzipan pie.</p>
-	<img src="../img/kat_1.jpg" /><br/>
-
-	<h4>Red Card Katarina</h4>
-	<p>Cheesecake marzipan cupcake biscuit candy canes pudding.</p>
-	<img src="../img/kat_2.jpg" /><br/>
-
-	<h4>Kitty Cat Katarina</h4>
-	<p>Applicake topping halvah lemon drops wypas cotton candy.</p>
-	<img src="../img/kat_3.jpg" /><br/>
-
-	<h4>High Command Katarina</h4>
-	<p>Oat cake macaroon souffle cupcake chupa chups chocolate bar bear claw dragee lemon drops.</p>
-	<img src="../img/kat_4.jpg" /><br/>
+    <div id="rotator">
+		<div id="kat_1" class="rotated">
+            <img src="../img/kat_1.jpg" />
+            <div class="copy">
+                <h4>Katarina</h4>
+                <p>Fruitcake bonbon donut jelly-o brownie biscuit marzipan pie.</p>
+            </div>
+        </div>
+		<div id="kat_2" class="rotated">
+            <img src="../img/kat_2.jpg" />
+            <div class="copy">
+                <h4>Red Card Katarina</h4>
+                <p>Cheesecake marzipan cupcake biscuit candy canes pudding.</p>
+            </div>
+        </div>
+		<div id="kat_3" class="rotated">
+            <img src="../img/kat_3.jpg" />
+            <div class="copy">
+                <h4>Kitty Cat Katarina</h4>
+                <p>Applicake topping halvah lemon drops wypas cotton candy.</p>
+            </div>
+        </div>
+		<div id="kat_4" class="rotated">
+            <img src="../img/kat_4.jpg" />
+            <div class="copy">
+                <h4>High Command Katarina</h4>
+                <p>Oat cake macaroon souffle cupcake chupa chups chocolate bar bear claw dragee lemon drops.</p>
+            </div>
+        </div>
+	</div>
 
 	<hr/>
-
-	<div id="rotator">
-		Rotator Here
-	</div>
+    
 </div>
+
+<script type="text/javascript">
+    /*
+    NOTES TO SELF:
+    -Iterate through body, assign to array the values of h4, p, and img tag
+        --i.e., arr[#] = {h4:'Katarina', p:'Fruitcake bonbon donut jelly-o brownie biscuit marzipan pie.', img:{src:'../img/kat_1.jpg'}}
+    -Dynamically create div's in div#rotator, use truncated filename as id
+        --i.e., <div id="kat_1" class="rotated">...</div>
+    -Iterate through array and populate dynamically-created div's
+        --i.e., <div id="kat_1" class="rotated"><h4></h4>...<p>...<img></div>
+        --p with "candy" or "marzipan" in the string? Or everything after <hr>?
+    -Set up timer script
+        --Every X seconds, run function that slides next image in queue from left to right
+        --setInterval()
+        --
+    -Set up CSS
+        --div#rotator {overflow: hidden; width: XXX; height: YYY; }
+        --div#rotator div.rotated div.copy { // Make this a box at the bottom of the image with a translucent background }
+        --div#rotator div.rotated div.copy h4 { // Insert into same box as div.rotated div.copy p  }
+        --div#rotator div.rotated div.copy p { }
+    */
+    var rotator = document.getElementById('rotator');
+    var rotated = rotator.getElementsByClassName('rotated');
+    var sCount = 0;
+    var sMax = rotated.length - 1;
+    var si;
+    var current = rotated[sCount]; 
+    var next = rotated[sCount+1];
+    var rWidth = parseInt(getStyle(rotator, 'width'));
+    var time = 3000;
+
+    function swapImage() {
+        current = rotated[sCount];
+        sCount = (sCount < sMax) ? sCount + 1 : 0;
+        next = rotated[sCount];
+        
+        current.style.zIndex = 2;
+        next.style.zIndex = 1;
+        
+        animate(current, 'left', 'px', 0, -rWidth, 500);
+        animate(next, 'left', 'px', rWidth, 0, 500);
+    };
+    
+    function animate(elem,style,unit,from,to,time) {
+        if(!elem) return;
+        var start = new Date().getTime(),
+            timer = setInterval(function() {
+                var step = Math.min(1,(new Date().getTime()-start)/time);
+                elem.style[style] = (from+step*(to-from))+unit;
+                if( step == 1) clearInterval(timer);
+            },25);
+        elem.style[style] = from+unit;
+    };
+    
+    function getStyle(el, cssprop){
+        if (el.currentStyle) //IE
+            return el.currentStyle[cssprop]
+        else if (document.defaultView && document.defaultView.getComputedStyle) //Firefox
+            return document.defaultView.getComputedStyle(el, "")[cssprop]
+        else //try and get inline style
+            return el.style[cssprop]
+    };
+        
+    window.onload = function() {
+        clearInterval(si);
+        si = setInterval(swapImage, time);
+    };
+
+</script>    
 
 </body>
 </html>
